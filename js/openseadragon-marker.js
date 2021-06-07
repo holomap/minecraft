@@ -55,18 +55,13 @@
 			hEl.addElement({
 				id: "M"+String(i),
 				element: M[i],
-				x: marker[i][0])
 				x: zeroX+(Math.abs(marker[i][0])*8*Math.sign(marker[i][0]))-Math.round(mw/2),
 				y: zeroY+(Math.abs(marker[i][1])*8*Math.sign(marker[i][1]))-Math.round(mh/2),
 				width: mw,
 				height: mh
 			})
 			new OpenSeadragon.MouseTracker({element: M[i], clickHandler: onMarker});
-
-console.log(zeroX+(Math.abs(marker[i][0])*8*Math.sign(marker[i][0]))-Math.round(mw/2));
 		}
-
-
 
 		if(self.imagingHelper.getZoomFactor() > 0.5 && jQuery('.markerOn').length){
 			jQuery("a.marker").css('display','block');
