@@ -18,7 +18,8 @@
 		var mw = 36;
 		var exp = 180;
 
-
+		var zeroX = 3072;
+		var zeroY = 7168;
 
 
 		// 変化検知
@@ -54,8 +55,9 @@
 			hEl.addElement({
 				id: "M"+String(i),
 				element: M[i],
-				x: Math.round(marker[i][0]*vw)-Math.round(mw/2),
-				y: Math.round(marker[i][1]*vw)-Math.round(mh/2),
+				x: marker[i][0])
+				x: zeroX+(Math.abs(marker[i][0])*8*Math.sign(marker[i][0])),
+				y: zeroY+(Math.abs(marker[i][1])*8*Math.sign(marker[i][1])),
 				width: mw,
 				height: mh
 			})
