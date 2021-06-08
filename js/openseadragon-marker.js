@@ -71,7 +71,7 @@
 
 		function onMarker(e){
 			var target = e.originalEvent.target;
-			if (target.matches('a')) {
+			if (target.matches('a')&&target.getAttribute('href')!="") {
 				if (target.getAttribute('target') === '_blank') window.open(target.getAttribute('href'));
 				else location.href = target.getAttribute('href');
 			}
