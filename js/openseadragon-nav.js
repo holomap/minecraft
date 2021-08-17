@@ -30,7 +30,7 @@
 			moveHandler: function(event) {
 				var webPoint = event.position;
 				var viewportPoint = self.viewport.pointFromPixel(webPoint);
-				var imagePoint = self.viewport.viewportToImageCoordinates(viewportPoint);
+				var imagePoint = self.world.getItemAt(0).viewportToImageCoordinates(viewportPoint);
 
 				const positionEl = document.getElementById("position");
 				positionEl.innerHTML = 'X:' + Math.floor((imagePoint.x-zx)/scale) + ' Z:' + Math.floor((imagePoint.y-zy)/scale) + '&nbsp;&nbsp;&nbsp;';
