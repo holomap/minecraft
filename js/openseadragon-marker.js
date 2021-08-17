@@ -17,32 +17,48 @@
 		var mw = 36;
 		var exp = 180;
 
+		if (!self.marker_elems) {
+			self.marker_elems = [];
+			self.marker_enabled = true;
+			self.marker_visible = true;
+			self.marker_lastchanged = 0;
+		}
+
+		const updateVisibility = () => {
+			if (self.marker_enabled && self.imagingHelper.getZoomFactor() > threshold) {
+				if (!self.marker_visible) {
+					jQuery(self.marker_elems).css('display','block');
+					self.marker_visible = true;
+				}
+			} else {
+				if (self.marker_visible) {
+					jQuery(self.marker_elems).css('display','none');
+					self.marker_visible = false;
+				}
+			}
+		};
+
 		// 変化検知
 		var imagingHelper = self.activateImagingHelper({onImageViewChanged: onImageViewChanged});
 		function onImageViewChanged(event) {
-			if(self.imagingHelper.getZoomFactor() > threshold){
-				if(jQuery('.markerOn').length) jQuery("a.marker").css('display','block');
-			} else {
-				jQuery("a.marker").css('display','none');
-			}
+			var now = (new Date()).getTime();
+			if (now < self.marker_lastchanged + 150) return;
+			self.marker_lastchanged = now;
+
+			updateVisibility();
 		}
 
 		var hEl = self.HTMLelements();
 		var M = [];
 
 		var cookie = jQuery.cookie('marker');
-		var initclass;
-		if(cookie === undefined||cookie == "1"){ 
-			initclass = "marker markerOn";
-			jQuery.cookie('marker',"1",{expires:exp, path: '/'});
-		} else {
-			initclass = "marker";
-			jQuery.cookie('marker',"0",{expires:exp, path: '/'});
-		}
-
+		self.marker_enabled = (cookie === undefined || cookie == "1");
+		jQuery.cookie('marker', (self.marker_enabled ? "1" : "0"), {expires:exp, path: '/'});
+		
 		for(var i=0; i<marker.length; i++){
 			M[i] = document.createElement("a");
-			M[i].className = initclass;
+			self.marker_elems.push(M[i]);
+			M[i].className = "marker";
 			M[i].setAttribute("href",marker[i][3]);
 			M[i].setAttribute("title",marker[i][2]);
 			M[i].setAttribute("target","_blank");
@@ -58,11 +74,7 @@
 			new OpenSeadragon.MouseTracker({element: M[i], clickHandler: onMarker});
 		}
 
-		if(self.imagingHelper.getZoomFactor() > threshold && jQuery('.markerOn').length){
-			jQuery("a.marker").css('display','block');
-		} else {
-			jQuery("a.marker").css('display','none');
-		}
+		updateVisibility();
 
 		function onMarker(e){
 			var target = e.originalEvent.target;
@@ -78,26 +90,16 @@
 			srcGroup: 'images/marker_grouphover.png',
 			srcHover: 'images/marker_hover.png',
 			srcDown:  'images/marker_pressed.png',
-			onClick: markerChange
+			onClick: toggleMarker
 		});
 		//self.addControl(markerButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
 		self.buttons.buttons.push(markerButton);
 		self.buttons.element.appendChild(markerButton.element);
 
-		function markerChange(){
-			if  (jQuery('.markerOn').length){ 
-				jQuery("a.marker").removeClass('markerOn');
-				jQuery("a.marker").css('display','none');
-				jQuery.cookie('marker',"0",{expires:exp, path: '/'});
-			} else {
-				jQuery("a.marker").addClass('markerOn');
-				if(imagingHelper.getZoomFactor() > threshold){
-					jQuery("a.marker").css('display','block');
-				} else {
-					jQuery("a.marker").css('display','none');
-				}
-				jQuery.cookie('marker',"1",{expires:exp, path: '/'});
-			}
+		function toggleMarker(){
+			self.marker_enabled = !self.marker_enabled;
+			updateVisibility();
+			jQuery.cookie('marker', (self.marker_enabled ? "1" : "0"), {expires:exp, path: '/'});
 		}
 		//console.dir(self.viewport); 
 		//console.log(self.viewport.getZoom);
