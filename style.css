@@ -116,9 +116,9 @@ a#run:before {
 }
 
 div#position {
-	padding:0.5em 1em;
-	min-width: 4.5em;
-	min-height: 2em;
+	padding: 0.5em 1em;
+	min-width: 6em;
+	text-align: right;
 	font-size: 10px; font-size: 1.0rem;
 	color: #FFF;
 	background-color: rgba(0,0,0,0.5);

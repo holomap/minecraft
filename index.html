@@ -17,50 +17,52 @@
 </head><body>
 <main id="main"></main>
 <script type="text/javascript">
+(function(){
 
-	var scale = 8;
-	var vw = 9216; // (128*8 + 64*2) * scale
-	var vh = 8192; // (128*7 + 64*2) * scale
-	var zx = 3072; // (64 + 128*2.5) * scale
-	var zy = 7168; // (64 + 128*6.5) * scale
+	const scale = 8;
+	const vw = 9216; // (128*8 + 64*2) * scale
+	const vh = 8192; // (128*7 + 64*2) * scale
+	const zx = 3072; // (64 + 128*2.5) * scale
+	const zy = 7168; // (64 + 128*6.5) * scale
 
-	var markerfile = "marker.csv";
-	var marker = [];
+	const markerfile = "marker.csv";
 
-	function readMarkerCsv(data) {
-		var csv = $.csv.toArrays(data);
-		for(var i=0; i<csv.length; i++) if(i>0) marker.push(csv[i]);
-	}
-	$.get(markerfile, readMarkerCsv, 'text');// マーカー情報
-
-	$(document).ajaxStop(function() {
-
-		// CSV読み込みが完了する前にviewerを生成するとopen時の描写がされない
-		var viewer = OpenSeadragon({
-			id: "main", 
-			prefixUrl: "images/", 
-			showNavigator: true, 
-			tileSources: {
-				Image: {
-					xmlns:    "http://schemas.microsoft.com/deepzoom/2008",
-					Url:      "tiles/",
-					Format:   "jpg", 
-					Overlap:  1, 
-					TileSize: 256,
-					Size: {
-						Height: vh,
-						Width:  vw
-					}
+	const viewer = OpenSeadragon({
+		id: "main",
+		prefixUrl: "images/",
+		showNavigator: true,
+		tileSources: {
+			Image: {
+				xmlns: "http://schemas.microsoft.com/deepzoom/2008",
+				Url: "tiles/",
+				Format: "jpg",
+				Overlap: 1,
+				TileSize: 256,
+				Size: {
+					Height: vh,
+					Width: vw
 				}
 			}
-		});
-		viewer.nav(zx, zy, scale);// ナビボタン
-		viewer.bookmarkUrl();// 座標URL
-		viewer.stalkerImage();// アニメーションポインター
-		viewer.markerLink(marker, vw, vh, zx, zy, scale, 4);// マーカーリンク
-		viewer.saveImage();// 画像ダウンロード
-		viewer.printMode();// 印刷モード
+		}
 	});
+
+	viewer.setupMapInfo(vw, vh, zx, zy, scale);
+	viewer.nav(); // ナビボタン
+	viewer.bookmarkUrl(); // 座標URL
+	viewer.stalkerImage(); // アニメーションポインター
+	viewer.markerLink(4); // マーカーリンク
+	viewer.saveImage(); // 画像ダウンロード
+	viewer.printMode(); // 印刷モード
+
+	// マーカー情報
+	function readMarkerCsv(data) {
+		const markers = $.csv.toArrays(data);
+		markers.shift(); // strip header
+		viewer.addMarkers(markers, 36);
+	}
+	$.get(markerfile, readMarkerCsv, 'text');
+
+})();
 </script>
 </body>
 </html>
