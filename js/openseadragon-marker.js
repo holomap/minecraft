@@ -1,6 +1,5 @@
 (function() {
 
-
 	// ----------
 	var $ = window.OpenSeadragon;
 
@@ -12,20 +11,16 @@
 	}
 
 	// ----------
-	$.Viewer.prototype.markerLink = function(marker, vw) {
+	$.Viewer.prototype.markerLink = function(marker, zx, zy, scale, threshold) {
 		var self = this;
 		var mh = 36;
 		var mw = 36;
 		var exp = 180;
 
-		var zeroX = 3072;
-		var zeroY = 7168;
-
-
 		// 変化検知
 		var imagingHelper = self.activateImagingHelper({onImageViewChanged: onImageViewChanged});
 		function onImageViewChanged(event) {
-			if(self.imagingHelper.getZoomFactor() > 0.5){
+			if(self.imagingHelper.getZoomFactor() > threshold){
 				if(jQuery('.markerOn').length) jQuery("a.marker").css('display','block');
 			} else {
 				jQuery("a.marker").css('display','none');
@@ -55,15 +50,15 @@
 			hEl.addElement({
 				id: "M"+String(i),
 				element: M[i],
-				x: zeroX+(Math.abs(marker[i][0])*8*Math.sign(marker[i][0]))-Math.round(mw/2),
-				y: zeroY+(Math.abs(marker[i][1])*8*Math.sign(marker[i][1]))-Math.round(mh/2),
+				x: zx+(Math.abs(marker[i][0])*scale*Math.sign(marker[i][0]))-Math.round(mw/2),
+				y: zy+(Math.abs(marker[i][1])*scale*Math.sign(marker[i][1]))-Math.round(mh/2),
 				width: mw,
 				height: mh
 			})
 			new OpenSeadragon.MouseTracker({element: M[i], clickHandler: onMarker});
 		}
 
-		if(self.imagingHelper.getZoomFactor() > 0.5 && jQuery('.markerOn').length){
+		if(self.imagingHelper.getZoomFactor() > threshold && jQuery('.markerOn').length){
 			jQuery("a.marker").css('display','block');
 		} else {
 			jQuery("a.marker").css('display','none');
@@ -96,7 +91,7 @@
 				jQuery.cookie('marker',"0",{expires:exp, path: '/'});
 			} else {
 				jQuery("a.marker").addClass('markerOn');
-				if(imagingHelper.getZoomFactor() > 0.5){
+				if(imagingHelper.getZoomFactor() > threshold){
 					jQuery("a.marker").css('display','block');
 				} else {
 					jQuery("a.marker").css('display','none');

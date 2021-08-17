@@ -1,9 +1,5 @@
 (function() {
 
-	var zeroX = 3072;
-	var zeroY = 7168;
-
-
 	// ----------
 	var $ = window.OpenSeadragon;
 
@@ -15,7 +11,7 @@
 	}
 
 	// ----------
-	$.Viewer.prototype.nav = function(c) {
+	$.Viewer.prototype.nav = function(zx, zy, scale) {
 		var self = this;
 
 		var n = document.createElement('nav');
@@ -37,14 +33,12 @@
 				var imagePoint = self.viewport.viewportToImageCoordinates(viewportPoint);
 
 				const positionEl = document.getElementById("position");
-				positionEl.innerHTML = 'X:' + Math.floor((imagePoint.x-zeroX)/8) + ' Z:' + Math.floor((imagePoint.y-zeroY)/8) + '&nbsp;&nbsp;&nbsp;';
+				positionEl.innerHTML = 'X:' + Math.floor((imagePoint.x-zx)/scale) + ' Z:' + Math.floor((imagePoint.y-zy)/scale) + '&nbsp;&nbsp;&nbsp;';
 
 			}
 		});
 		tracker.setTracking(true);
 
-
-
-
 	};
-})();
+
+})();

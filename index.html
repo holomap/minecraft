@@ -18,8 +18,11 @@
 <main id="main"></main>
 <script type="text/javascript">
 
-	var vh = 8192;
-	var vw = 9216;
+	var scale = 8;
+	var vw = 9216; // (128*8 + 64*2) * scale
+	var vh = 8192; // (128*7 + 64*2) * scale
+	var zx = 3072; // (64 + 128*2.5) * scale
+	var zy = 7168; // (64 + 128*6.5) * scale
 
 	var markerfile = "marker.csv";
 	var marker = [];
@@ -51,10 +54,10 @@
 				}
 			}
 		});
-		viewer.nav("index");// ナビボタン
+		viewer.nav(zx, zy, scale);// ナビボタン
 		viewer.bookmarkUrl();// 座標URL
 		viewer.stalkerImage();// アニメーションポインター
-		viewer.markerLink(marker, vw);// マーカーリンク
+		viewer.markerLink(marker, zx, zy, scale, 0.5);// マーカーリンク
 		viewer.saveImage();// 画像ダウンロード
 		viewer.printMode();// 印刷モード
 	});
