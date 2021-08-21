@@ -1,8 +1,9 @@
 // OpenSeadragon Bookmark URL plugin 0.0.2
+// modified
 
 (function() {
 
-    var $ = window.OpenSeadragon;
+    const $ = window.OpenSeadragon;
 
     if (!$) {
         $ = require('openseadragon');
@@ -11,53 +12,100 @@
         }
     }
 
+    const v1 = {
+        scale: 8,
+        vw: 9216, // (128*8 + 64*2) * scale
+        vh: 8192, // (128*7 + 64*2) * scale
+        zx: 3072, // (64 + 128*2.5) * scale
+        zy: 7168, // (64 + 128*6.5) * scale
+    };
+
+    const VERSION = 2;
+
     // ----------
     $.Viewer.prototype.bookmarkUrl = function() {
-        var self = this;
+        const self = this;
+		const vw = self.map_size.width;
+		const vh = self.map_size.height;
+		const zx = self.map_origin.x;
+		const zy = self.map_origin.y;
+		const scale = self.map_scale;
 
-        var updateTimeout;
+        let updateTimeout;
 
-        var parseHash = function() {
-            var params = {};
-            var hash = window.location.hash.replace(/^#/, '');
+        const parseHash = function() {
+            const params = {};
+            const hash = window.location.hash.replace(/^#/, '');
             if (hash) {
-                var parts = hash.split('&');
+                const parts = hash.split('&');
                 parts.forEach(function(part) {
                     var subparts = part.split('=');
                     var key = subparts[0];
-                    var value = parseFloat(subparts[1]);
-                    if (!key || isNaN(value)) {
-                        console.error('bad hash param', part);
-                    } else {
-                        params[key] = value;
-                    }
+                    var value = subparts[1];
+                    params[key] = value;
                 });
+
+                const ver = parseInt(params.v);
+                const zoom = parseFloat(params.zoom);
+                const x = parseFloat(params.x);
+                const y = parseFloat(params.y);
+
+                if (isNaN(ver)) {
+                    params.v = 1;
+                } else {
+                    params.v = ver;
+                }
+                if (isNaN(zoom)) {
+                    delete params.zoom;
+                } else {
+                    params.zoom = zoom;
+                }
+                if (isNaN(x) || isNaN(y)) {
+                    console.error('bad hash param', part);
+                    delete params.x;
+                    delete params.y;
+                    delete params.zoom;
+                } else {
+                    params.x = x;
+                    params.y = y;
+                }
+
+                if (params.v < 2) {
+                    params.x = (params.x * v1.vw - v1.zx) / v1.scale;
+                    params.y = (params.y * v1.vw - v1.zy) / v1.scale; // not vh
+                }
             }
 
             return params;
         };
 
-        var updateUrl = function() {
+        const updateUrl = function() {
             // We only update once it's settled, so we're not constantly flashing the URL.
             clearTimeout(updateTimeout);
             updateTimeout = setTimeout(function() {
-                var zoom = self.viewport.getZoom();
-                var pan = self.viewport.getCenter();
-                var url = location.pathname + '#zoom=' + zoom + '&x=' + pan.x + '&y=' + pan.y;
+                const zoom = self.viewport.getZoom().toPrecision(2);
+                const pan = self.viewport.getCenter();
+                const x = Math.round((pan.x * vw - zx) / scale);
+                const y = Math.round((pan.y * vw - zy) / scale); // not vh
+                const url = location.pathname + '#v=' + VERSION + '&zoom=' + zoom + '&x=' + x + '&y=' + y;
                 history.replaceState({}, '', url);
             }, 100);
         };
 
-        var useParams = function(params) {
-            var zoom = self.viewport.getZoom();
-            var pan = self.viewport.getCenter();
+        const useParams = function(params) {
+            const zoom = self.viewport.getZoom();
+            const pan = self.viewport.getCenter();
 
-            if (params.zoom !== undefined && params.zoom !== zoom) {
+            if (params.zoom !== undefined) {
+                // if (params.zoom !== zoom)
                 self.viewport.zoomTo(params.zoom, null, true);
             }
 
-            if (params.x !== undefined && params.y !== undefined && (params.x !== pan.x || params.y !== pan.y)) {
-                self.viewport.panTo(new $.Point(params.x, params.y), true);
+            if (params.x !== undefined && params.y !== undefined) {
+                // if (params.x !== pan.x || params.y !== pan.y)
+                const x = (params.x * scale + zx) / vw;
+                const y = (params.y * scale + zy) / vw; // not vh
+                self.viewport.panTo(new $.Point(x, y), true);
             }
         };
 
