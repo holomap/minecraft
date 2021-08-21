@@ -23,7 +23,9 @@
 		var iframe = document.createElement('iframe');
 		document.body.appendChild(iframe);
 		hasTapEvent = ('ontouchstart' in iframe.contentWindow);
-		iframe.remove();
+		try {
+			iframe.remove();
+		} catch(e) {}
 
 		var body = document.body;
 		var im = document.createElement("div");
@@ -40,11 +42,14 @@
 			jQuery.cookie('pointer',"0",{expires:exp, path: '/'});
 		}
 
-
-
-
-
-		im.innerHTML = '<img src="images/skin80.webp" alt="" width="80" height="80">';
+		var img = document.createElement('img');
+		img.addEventListener("error", function(e) {
+			this.style.display = "none";
+		});
+		img.setAttribute("width", "80");
+		img.setAttribute("height", "80");
+		img.src = "images/skin80.webp";
+		im.appendChild(img);
 		body.appendChild(im);
 
 		window.addEventListener('mouseover',

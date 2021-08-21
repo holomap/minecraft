@@ -21,7 +21,7 @@
 		self.marker_visible = true;
 		self.marker_lastchanged = 0;
 
-		self.marker_update = () => {
+		self.marker_update = function() {
 			if (self.marker_enabled && self.imagingHelper.getZoomFactor() > threshold/scale) {
 				if (!self.marker_visible) {
 					jQuery(self.marker_elems).css('display', 'block');
@@ -51,12 +51,12 @@
 
 		// 変化検知
 		self.activateImagingHelper({
-			onImageViewChanged(event) {
+			onImageViewChanged: function(event) {
 				const now = (new Date()).getTime();
 				if (now < self.marker_lastchanged + 150) return;
 				self.marker_lastchanged = now;
 				self.marker_update();
-			}
+			},
 		});
 
 		const markerButton = new OpenSeadragon.Button({
@@ -90,7 +90,7 @@
 		const mh = size;
 		const mw = size;
 
-		marker.forEach((row) => {
+		marker.forEach(function(row) {
 			const icon = document.createElement("a");
 			const id = "marker-" + self.marker_elems.length;
 			
