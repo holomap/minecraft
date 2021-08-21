@@ -1,7 +1,7 @@
 (function() {
 
 	// ----------
-	const $ = window.OpenSeadragon;
+	let $ = window.OpenSeadragon;
 
 	if (!$) {
 		$ = require('openseadragon');
