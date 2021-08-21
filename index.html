@@ -19,11 +19,11 @@
 <script type="text/javascript">
 (function(){
 
-	const scale = 8;
-	const vw = 9216; // (128*8 + 64*2) * scale
-	const vh = 8192; // (128*7 + 64*2) * scale
-	const zx = 3072; // (64 + 128*2.5) * scale
-	const zy = 7168; // (64 + 128*6.5) * scale
+	const scale = 1;
+	const vw = 128*8 * scale;
+	const vh = 128*8 * scale;
+	const zx = 128*2.5 * scale;
+	const zy = 128*6.5 * scale;
 
 	const markerfile = "marker.csv";
 
@@ -31,13 +31,17 @@
 		id: "main",
 		prefixUrl: "images/",
 		showNavigator: true,
+		imageSmoothingEnabled: false,
+		maxZoomPixelRatio: 8,
 		tileSources: {
 			Image: {
 				xmlns: "http://schemas.microsoft.com/deepzoom/2008",
-				Url: "tiles/",
-				Format: "jpg",
+				Url: "tiles-original/",
+				Format: "png",
 				Overlap: 1,
 				TileSize: 256,
+				minLevel: 8,
+				maxLevel: 10,
 				Size: {
 					Height: vh,
 					Width: vw
@@ -58,7 +62,7 @@
 	function readMarkerCsv(data) {
 		const markers = $.csv.toArrays(data);
 		markers.shift(); // strip header
-		viewer.addMarkers(markers, 36);
+		viewer.addMarkers(markers, 24);
 	}
 	$.get(markerfile, readMarkerCsv, 'text');
 
