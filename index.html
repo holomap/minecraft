@@ -19,11 +19,22 @@
 <script type="text/javascript">
 (function(){
 
-	const scale = 1;
-	const vw = 128*8 * scale;
-	const vh = 128*8 * scale;
-	const zx = 128*2.5 * scale;
-	const zy = 128*6.5 * scale;
+	// 詳細地図（レベル1）
+	const mapinfo_1 = {
+		scale: 1,
+		vw: 128*8 * 1,
+		vh: 128*8 * 1,
+		zx: 128*2.5 * 1,
+		zy: 128*6.5 * 1,
+	};
+	// 以前の地図
+    const mapinfo_old = {
+        scale: 8,
+        vw: 9216, // (128*8 + 64*2) * scale
+        vh: 8192, // (128*7 + 64*2) * scale
+        zx: 3072, // (64 + 128*2.5) * scale
+        zy: 7168, // (64 + 128*6.5) * scale
+    };
 
 	const markerfile = "marker.csv";
 
@@ -43,29 +54,35 @@
 				minLevel: 8,
 				maxLevel: 10,
 				Size: {
-					Height: vh,
-					Width: vw
+					Height: mapinfo_1.vh,
+					Width: mapinfo_1.vw
 				}
 			}
 		}
 	});
 
-	viewer.setupMapInfo(vw, vh, zx, zy, scale);
+	viewer.setupMapInfo(mapinfo_1);
 	viewer.nav(); // ナビボタン
-	viewer.bookmarkUrl(); // 座標URL
+	viewer.bookmarkUrl(convertOldParams); // 座標URL
 	viewer.stalkerImage(); // アニメーションポインター
 	viewer.markerLink(4); // マーカーリンク
 	viewer.saveImage(); // 画像ダウンロード
 	viewer.printMode(); // 印刷モード
 
-	// マーカー情報
+	$.get(markerfile, readMarkerCsv, 'text'); // マーカー情報
+	
+	function convertOldParams(params) {
+		const v1 = mapinfo_old;
+        params.x = (params.x * v1.vw - v1.zx) / v1.scale;
+        params.y = (params.y * v1.vw - v1.zy) / v1.scale; // not vh
+	}
+
 	function readMarkerCsv(data) {
 		const markers = $.csv.toArrays(data);
 		markers.shift(); // strip header
 		viewer.addMarkers(markers, 24);
 	}
-	$.get(markerfile, readMarkerCsv, 'text');
-
+	
 })();
 </script>
 </body>

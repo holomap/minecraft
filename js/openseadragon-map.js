@@ -11,12 +11,10 @@
 	}
 
 	// ----------
-	$.Viewer.prototype.setupMapInfo = function(vw, vh, zx, zy, scale) {
+	$.Viewer.prototype.setupMapInfo = function(mapinfo) {
 		const self = this;
 
-		self.map_size = new $.Rect(0, 0, vw, vh);
-		self.map_origin = new $.Point(zx, zy);
-		self.map_scale = scale;
+		self.mapinfo = mapinfo;
 
 	};
 
@@ -25,7 +23,7 @@
 		const self = this;
 		const csize = self.viewport.getContainerSize();
 		const zoom = self.viewport.getZoom();
-		const factor = zoom * csize.x / self.map_size.width;
+		const factor = zoom * csize.x / self.mapinfo.vw;
 		return factor;
 	};
 
@@ -33,7 +31,7 @@
 	$.Viewer.prototype.setZoomFactor = function(factor, immediately) {
 		const self = this;
 		const csize = self.viewport.getContainerSize();
-		const zoom = factor * self.map_size.width / csize.x;
+		const zoom = factor * self.mapinfo.vw / csize.x;
 		self.viewport.zoomTo(zoom, null, immediately);
 	};
 

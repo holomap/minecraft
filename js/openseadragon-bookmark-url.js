@@ -12,24 +12,12 @@
         }
     }
 
-    const v1 = {
-        scale: 8,
-        vw: 9216, // (128*8 + 64*2) * scale
-        vh: 8192, // (128*7 + 64*2) * scale
-        zx: 3072, // (64 + 128*2.5) * scale
-        zy: 7168, // (64 + 128*6.5) * scale
-    };
-
     const VERSION = 2;
 
     // ----------
-    $.Viewer.prototype.bookmarkUrl = function() {
+    $.Viewer.prototype.bookmarkUrl = function(conv_old) {
         const self = this;
-		const vw = self.map_size.width;
-		const vh = self.map_size.height;
-		const zx = self.map_origin.x;
-		const zy = self.map_origin.y;
-		const scale = self.map_scale;
+        const info = self.mapinfo;
 
         let updateTimeout;
 
@@ -71,8 +59,9 @@
                 }
 
                 if (params.v < 2) {
-                    params.x = (params.x * v1.vw - v1.zx) / v1.scale;
-                    params.y = (params.y * v1.vw - v1.zy) / v1.scale; // not vh
+                    if (conv_old) {
+                        conv_old(params);
+                    }
                 }
             }
 
@@ -85,8 +74,8 @@
             updateTimeout = setTimeout(function() {
                 const zoom = self.getZoomFactor().toPrecision(2);
                 const pan = self.viewport.getCenter();
-                const x = Math.round((pan.x * vw - zx) / scale);
-                const y = Math.round((pan.y * vw - zy) / scale); // not vh
+                const x = Math.round((pan.x * info.vw - info.zx) / info.scale);
+                const y = Math.round((pan.y * info.vw - info.zy) / info.scale); // not vh
                 const url = location.pathname + '#v=' + VERSION + '&zoom=' + zoom + '&x=' + x + '&y=' + y;
                 history.replaceState({}, '', url);
             }, 100);
@@ -98,8 +87,8 @@
             }
 
             if (params.x !== undefined && params.y !== undefined) {
-                const x = (params.x * scale + zx) / vw;
-                const y = (params.y * scale + zy) / vw; // not vh
+                const x = (params.x * info.scale + info.zx) / info.vw;
+                const y = (params.y * info.scale + info.zy) / info.vw; // not vh
                 self.viewport.panTo(new $.Point(x, y), true);
             }
         };
