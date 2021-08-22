@@ -22,7 +22,7 @@
 		self.marker_lastchanged = 0;
 
 		self.marker_update = function() {
-			if (self.marker_enabled && self.imagingHelper.getZoomFactor() > threshold/scale) {
+			if (self.marker_enabled && self.getZoomFactor() > threshold/scale) {
 				if (!self.marker_visible) {
 					jQuery(self.marker_elems).css('display', 'block');
 					self.marker_visible = true;

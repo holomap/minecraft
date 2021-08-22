@@ -20,4 +20,21 @@
 
 	};
 
+	// ----------
+	$.Viewer.prototype.getZoomFactor = function() {
+		const self = this;
+		const csize = self.viewport.getContainerSize();
+		const zoom = self.viewport.getZoom();
+		const factor = zoom * csize.x / self.map_size.width;
+		return factor;
+	};
+
+	// ----------
+	$.Viewer.prototype.setZoomFactor = function(factor, immediately) {
+		const self = this;
+		const csize = self.viewport.getContainerSize();
+		const zoom = factor * self.map_size.width / csize.x;
+		self.viewport.zoomTo(zoom, null, immediately);
+	};
+
 })();

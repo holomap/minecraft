@@ -39,9 +39,9 @@
             if (hash) {
                 const parts = hash.split('&');
                 parts.forEach(function(part) {
-                    var subparts = part.split('=');
-                    var key = subparts[0];
-                    var value = subparts[1];
+                    const subparts = part.split('=');
+                    const key = subparts[0];
+                    const value = subparts[1];
                     params[key] = value;
                 });
 
@@ -83,7 +83,7 @@
             // We only update once it's settled, so we're not constantly flashing the URL.
             clearTimeout(updateTimeout);
             updateTimeout = setTimeout(function() {
-                const zoom = self.viewport.getZoom().toPrecision(2);
+                const zoom = self.getZoomFactor().toPrecision(2);
                 const pan = self.viewport.getCenter();
                 const x = Math.round((pan.x * vw - zx) / scale);
                 const y = Math.round((pan.y * vw - zy) / scale); // not vh
@@ -93,16 +93,11 @@
         };
 
         const useParams = function(params) {
-            const zoom = self.viewport.getZoom();
-            const pan = self.viewport.getCenter();
-
             if (params.zoom !== undefined) {
-                // if (params.zoom !== zoom)
-                self.viewport.zoomTo(params.zoom, null, true);
+                self.setZoomFactor(params.zoom, true);
             }
 
             if (params.x !== undefined && params.y !== undefined) {
-                // if (params.x !== pan.x || params.y !== pan.y)
                 const x = (params.x * scale + zx) / vw;
                 const y = (params.y * scale + zy) / vw; // not vh
                 self.viewport.panTo(new $.Point(x, y), true);
