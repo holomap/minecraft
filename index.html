@@ -19,6 +19,14 @@
 <script type="text/javascript">
 (function(){
 
+	// 最大範囲
+	const mapinfo_base = {
+		scale: 1,
+		vw: 128*12 * 1,
+		vh: 128*12 * 1,
+		zx: 128*4.5 * 1,
+		zy: 128*8.5 * 1,
+	};
 	// 詳細地図（レベル1）
 	const mapinfo_1 = {
 		scale: 1,
@@ -26,6 +34,14 @@
 		vh: 128*8 * 1,
 		zx: 128*2.5 * 1,
 		zy: 128*6.5 * 1,
+	};
+	// 広範囲地図（レベル3）
+	const mapinfo_3 = {
+		scale: 1/4,
+		vw: 128*12 * (1/4),
+		vh: 128*12 * (1/4),
+		zx: 128*4.5 * (1/4),
+		zy: 128*8.5 * (1/4),
 	};
 	// 以前の地図
     const mapinfo_old = {
@@ -45,23 +61,28 @@
 		imageSmoothingEnabled: false,
 		maxZoomPixelRatio: 8,
 		tileSources: {
-			Image: {
-				xmlns: "http://schemas.microsoft.com/deepzoom/2008",
-				Url: "tiles-original/",
-				Format: "png",
-				Overlap: 1,
-				TileSize: 256,
-				minLevel: 8,
-				maxLevel: 10,
-				Size: {
-					Height: mapinfo_1.vh,
-					Width: mapinfo_1.vw
-				}
-			}
-		}
+			id: "base",
+			type: "image",
+			url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=",
+		},
 	});
 
-	viewer.setupMapInfo(mapinfo_1);
+	viewer.setupMapInfo(mapinfo_base);
+
+	viewer.addTiledMap("original", mapinfo_1, {
+		url: "tiles-original/",
+		format: "png",
+		tileSize: 256,
+		overlap: 1,
+		minLevel: 8,
+		maxLevel: 10,
+	});
+
+	viewer.addSingleMap("3rd-scale", mapinfo_3, {
+		url: "map/3rd_scale.png",
+		index: 1, // under original
+	});
+
 	viewer.nav(); // ナビボタン
 	viewer.bookmarkUrl(convertOldParams); // 座標URL
 	viewer.stalkerImage(); // アニメーションポインター

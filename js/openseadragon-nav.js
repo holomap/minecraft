@@ -27,11 +27,13 @@
 		var tracker = new OpenSeadragon.MouseTracker({
 			element: self.container, 
 			moveHandler: function(event) {
+				if (self.world.getItemCount() <= 1) return;
+
 				const webPoint = event.position;
 				const viewportPoint = self.viewport.pointFromPixel(webPoint);
-				if (self.world.getItemCount() <= 0) return;
-				const imagePoint = self.world.getItemAt(0).viewportToImageCoordinates(viewportPoint);
-				const info = self.mapinfo;
+				const layer = self.world.getItemAt(1);
+				const imagePoint = layer.viewportToImageCoordinates(viewportPoint);
+				const info = layer.source.info;
 
 				const x = Math.floor((imagePoint.x - info.zx) / info.scale);
 				const z = Math.floor((imagePoint.y - info.zy) / info.scale);
