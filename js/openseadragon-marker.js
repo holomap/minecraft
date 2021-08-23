@@ -97,7 +97,6 @@
 			icon.setAttribute("target", "_blank");
 			icon.style.width = mw+"px";
 			icon.style.height = mh+"px";
-			icon.style.display = (self.marker_visible ? "block" : "none");
 
 			self.marker_elems.push(icon);
 
@@ -110,6 +109,9 @@
 				checkResize: false,
 			});
 			
+			// hide after calculate element size
+			icon.style.display = (self.marker_visible ? "block" : "none");
+
 			new OpenSeadragon.MouseTracker({element: icon, clickHandler: self.marker_onclick});
 		});
 
