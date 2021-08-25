@@ -97,6 +97,14 @@ nav>img {
 	background-color: rgba(255,255,255,0.5);
 	box-shadow: 0 0 10px 0px #fff;
 }
+.marker.fall {
+	background-image: url("images/mcicon/elytra32.png");
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background-color: rgba(255,255,255,0.5);
+	box-shadow: 0 0 10px 0px #fff;
+}
 
 #print {
 	position: absolute;
