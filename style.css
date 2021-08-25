@@ -76,11 +76,26 @@ nav>img {
 }
 
 .marker {
-	background-image:url("images/marker.png");
-	background-size:contain;
-	display:block;
-	width:100%;
-	height:100%;
+	background-size: contain;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.marker-disabled .marker {
+	display: none !important;
+}
+.marker.normal {
+	background-image: url("images/marker.png");
+	width: 24px;
+	height: 24px;
+}
+.marker.station {
+	background-image: url("images/mcicon/minecart32.png");
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background-color: rgba(255,255,255,0.5);
+	box-shadow: 0 0 10px 0px #fff;
 }
 
 #print {
@@ -103,13 +118,13 @@ nav>img {
 	margin:auto;
 }
 a#off:before {
-	font-family: "Font Awesome 5 Free";/* ƒAƒCƒRƒ“ƒtƒHƒ“ƒg */
+	font-family: "Font Awesome 5 Free";/* ã‚¢ã‚¤ã‚³ãƒ³ãƒ•ã‚©ãƒ³ãƒˆ */
 	content: "\f410";/*  */
 	font-weight:900;/* Solid */
 	margin-right:5px;
 }
 a#run:before {
-	font-family: "Font Awesome 5 Free";/* ƒAƒCƒRƒ“ƒtƒHƒ“ƒg */
+	font-family: "Font Awesome 5 Free";/* ã‚¢ã‚¤ã‚³ãƒ³ãƒ•ã‚©ãƒ³ãƒˆ */
 	content: "\f02f";/*  */
 	font-weight:900;/* Solid */
 	margin-right:5px;
@@ -122,4 +137,17 @@ div#position {
 	font-size: 10px; font-size: 1.0rem;
 	color: #FFF;
 	background-color: rgba(0,0,0,0.5);
+}
+
+div#layerlist > div {
+	padding: 0.5em 1em;
+	/*min-width: 6em;*/
+	font-size: 10px; font-size: 1.0rem;
+	color: #FFF;
+	background-color: rgba(0,0,0,0.5);
+	user-select: none;
+}
+
+div#layerlist ul {
+	list-style: none;
 }

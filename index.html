@@ -27,32 +27,14 @@
 		zx: 128*4.5 * 1,
 		zy: 128*8.5 * 1,
 	};
-	// 詳細地図（レベル1）
-	const mapinfo_1 = {
-		scale: 1,
-		vw: 128*8 * 1,
-		vh: 128*8 * 1,
-		zx: 128*2.5 * 1,
-		zy: 128*6.5 * 1,
-	};
-	// 広範囲地図（レベル3）
-	const mapinfo_3 = {
-		scale: 1/4,
-		vw: 128*12 * (1/4),
-		vh: 128*12 * (1/4),
-		zx: 128*4.5 * (1/4),
-		zy: 128*8.5 * (1/4),
-	};
 	// 以前の地図
-    const mapinfo_old = {
-        scale: 8,
-        vw: 9216, // (128*8 + 64*2) * scale
-        vh: 8192, // (128*7 + 64*2) * scale
-        zx: 3072, // (64 + 128*2.5) * scale
-        zy: 7168, // (64 + 128*6.5) * scale
-    };
-
-	const markerfile = "marker.csv";
+	const mapinfo_old = {
+		scale: 8,
+		vw: 9216, // (128*8 + 64*2) * scale
+		vh: 8192, // (128*7 + 64*2) * scale
+		zx: 3072, // (64 + 128*2.5) * scale
+		zy: 7168, // (64 + 128*6.5) * scale
+	};
 
 	const viewer = OpenSeadragon({
 		id: "main",
@@ -69,20 +51,6 @@
 
 	viewer.setupMapInfo(mapinfo_base);
 
-	viewer.addTiledMap("original", mapinfo_1, {
-		url: "tiles-original/",
-		format: "png",
-		tileSize: 256,
-		overlap: 1,
-		minLevel: 8,
-		maxLevel: 10,
-	});
-
-	viewer.addSingleMap("3rd-scale", mapinfo_3, {
-		url: "map/3rd_scale.png",
-		index: 1, // under original
-	});
-
 	viewer.nav(); // ナビボタン
 	viewer.bookmarkUrl(convertOldParams); // 座標URL
 	viewer.stalkerImage(); // アニメーションポインター
@@ -90,20 +58,111 @@
 	viewer.saveImage(); // 画像ダウンロード
 	viewer.printMode(); // 印刷モード
 
-	$.get(markerfile, readMarkerCsv, 'text'); // マーカー情報
-	
-	function convertOldParams(params) {
-		const v1 = mapinfo_old;
-        params.x = (params.x * v1.vw - v1.zx) / v1.scale;
-        params.y = (params.y * v1.vw - v1.zy) / v1.scale; // not vh
+	loadMapLayers(viewer);
+
+	loadMarkers(viewer);
+
+	function loadMapLayers(viewer) {
+		// 詳細地図（レベル1）
+		const mapinfo_1 = {
+			scale: 1,
+			vw: 128*8 * 1,
+			vh: 128*8 * 1,
+			zx: 128*2.5 * 1,
+			zy: 128*6.5 * 1,
+		};
+		// 広範囲地図（レベル3）
+		const mapinfo_3 = {
+			scale: 1/4,
+			vw: 128*12 * (1/4),
+			vh: 128*12 * (1/4),
+			zx: 128*4.5 * (1/4),
+			zy: 128*8.5 * (1/4),
+		};
+
+		viewer.addTiledMap("original", mapinfo_1, {
+			url: "tiles-original/",
+			format: "png",
+			tileSize: 256,
+			overlap: 1,
+			minLevel: 8,
+			maxLevel: 10,
+		});
+
+		viewer.addSingleMap("3rd-scale", mapinfo_3, {
+			url: "map/3rd_scale.png",
+			index: 1, // under original
+		});
+
+		viewer.addSingleMap("rails", mapinfo_1, {
+			url: "map/rails.png",
+			visible: false,
+		});
+
+		viewer.addSingleMap("haachama-coaster", mapinfo_1, {
+			url: "map/haachama_coaster.png",
+			visible: false,
+		});
+
+		viewer.addMapSwitcher([
+			//["original", "生地図", true],
+			["rails", "鉄道", false],
+			["haachama-coaster", "はあちゃまコースター", false],
+		], function(name, show) {
+			if (name == "original") {
+				viewer.showLayer("original", show);
+				viewer.showLayer("3rd-scale", show);
+			} else {
+				viewer.showLayer(name, show);
+			}
+			if (name == "rails" || name == "haachama-coaster") {
+				viewer.showMarkers(name, show);
+			}
+		});
+
+		viewer.addMarkers([
+			//[290, -195, "ホロハウス前", null, "rails"],
+			//[293, -194, "ホロハウス前", null, "rails"],
+			[291.5, -194.5, "ホロハウス前", null, "rails"],
+			[424, -91, "高性能ハウス山麓", null, "rails"],
+			[387, -333, "ちくわぶタワー前", null, "rails"],
+			[463, -511, "運動会会場（下車）", null, "rails"],
+			[461, -520, "運動会会場（乗り場）", null, "rails"],
+			//[232, -344, "AKUKINステーション", null, "rails"],
+			//[234, -344, "AKUKINステーション", null, "rails"],
+			[233, -344, "AKUKINステーション", null, "rails"],
+			[245, -360, "AKUKINステーション前", null, "rails"],
+			[198, -470, "ねぽらぼビル前", null, "rails"],
+			[-238, -517, "AKUKIN建設本社前", null, "rails"],
+			[69, -427, "旧AKUKIN建設本社前", null, "rails"],
+			[296, -358, "はあちゃまデスコースター乗り場", null, "haachama-coaster"],
+			[466, -143, "はあちゃまデスコースター第1部終着点（下車）", null, "haachama-coaster"],
+			[462, -136, "はあちゃまデスコースター第2部乗り場", null, "haachama-coaster"],
+			[255, -372, "はあちゃまデスコースター第2部終着点（下車）", null, "haachama-coaster"],
+			[299, -367, "バベちゃまの塔・あくあ地下帝国行き乗り場", null, "haachama-coaster"],
+			//[299, -435, "分岐点", null],
+			[420, -719, "バベちゃまの塔", null, "haachama-coaster"],
+		], "station", false);
 	}
 
-	function readMarkerCsv(data) {
-		const markers = $.csv.toArrays(data);
-		markers.shift(); // strip header
-		viewer.addMarkers(markers, 24);
-	}
+	function loadMarkers(viewer) {
+		$.get("marker.csv", readMarkerCsv, 'text'); // マーカー情報
 	
+		function readMarkerCsv(data) {
+			let markers = $.csv.toArrays(data);
+			markers.shift(); // strip header
+			// ignore commented-out rows
+			markers = markers.filter(function(r){return !r[0].match(/^\/\//)});
+			viewer.addMarkers(markers, "normal", true);
+		}
+	}
+
+	function convertOldParams(params) {
+		const v1 = mapinfo_old;
+		params.x = (params.x * v1.vw - v1.zx) / v1.scale;
+		params.y = (params.y * v1.vw - v1.zy) / v1.scale; // not vh
+	}
+
 })();
 </script>
 </body>

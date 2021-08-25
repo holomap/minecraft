@@ -18,22 +18,8 @@
 
 		self.marker_elems = [];
 		self.marker_enabled = true;
-		self.marker_visible = true;
+		self.marker_threshold = threshold;
 		self.marker_lastchanged = 0;
-
-		self.marker_update = function() {
-			if (self.marker_enabled && self.getZoomFactor() > threshold/scale) {
-				if (!self.marker_visible) {
-					jQuery(self.marker_elems).css('display', 'block');
-					self.marker_visible = true;
-				}
-			} else {
-				if (self.marker_visible) {
-					jQuery(self.marker_elems).css('display', 'none');
-					self.marker_visible = false;
-				}
-			}
-		};
 
 		const cookie = jQuery.cookie('marker');
 		self.marker_enabled = (cookie === undefined || cookie == "1");
@@ -41,11 +27,11 @@
 		
 		self.marker_onclick = function onMarker(e) {
 			const target = e.originalEvent.target;
-			if (target.matches('a') && target.getAttribute('href')!="") {
-				if (target.getAttribute('target') === '_blank')
-					window.open(target.getAttribute('href'));
+			if (target.matches('a') && target.href) {
+				if (target.target == '_blank')
+					window.open(target.href);
 				else
-					location.href = target.getAttribute('href');
+					location.href = target.href;
 			}
 		};
 
@@ -55,7 +41,7 @@
 				const now = (new Date()).getTime();
 				if (now < self.marker_lastchanged + 150) return;
 				self.marker_lastchanged = now;
-				self.marker_update();
+				self.updateMarkers();
 			},
 		});
 
@@ -73,18 +59,17 @@
 
 		function toggleMarker() {
 			self.marker_enabled = !self.marker_enabled;
-			self.marker_update();
+			self.element.classList.toggle("marker-disabled", !self.marker_enabled);
+			self.updateMarkers();
 			jQuery.cookie('marker', (self.marker_enabled ? "1" : "0"), {expires:exp, path: '/'});
 		}
 		
 	}
 
 	// ----------
-	$.Viewer.prototype.addMarkers = function(marker, size) {
+	$.Viewer.prototype.addMarkers = function(marker, type, show) {
 		const self = this;
 		const info = self.mapinfo;
-		const mh = size;
-		const mw = size;
 
 		marker.forEach(function(row) {
 			const icon = document.createElement("a");
@@ -92,11 +77,15 @@
 			
 			icon.id = id;
 			icon.className = "marker";
-			icon.setAttribute("href", row[3]);
+			icon.classList.add(type);
 			icon.setAttribute("title", row[2]);
-			icon.setAttribute("target", "_blank");
-			icon.style.width = mw+"px";
-			icon.style.height = mh+"px";
+			if (row[3]) {
+				icon.href = row[3];
+				icon.target = "_blank";
+			}
+			//icon.dataset.type = type;
+			icon.dataset.type = row[4] || type;
+			icon.dataset.on = (show ? "1" : "0");
 
 			self.marker_elems.push(icon);
 
@@ -108,15 +97,39 @@
 				placement: $.Placement.CENTER,
 				checkResize: false,
 			});
-			
-			// hide after calculate element size
-			icon.style.display = (self.marker_visible ? "block" : "none");
 
 			new OpenSeadragon.MouseTracker({element: icon, clickHandler: self.marker_onclick});
 		});
 
-		self.marker_update();
+		self.updateMarkers();
 
+	};
+
+	// ----------
+	$.Viewer.prototype.updateMarkers = function() {
+		const self = this;
+		const threshold = self.marker_threshold;
+
+		if (self.marker_enabled) {
+			const zoom = self.getZoomFactor();
+			self.marker_elems.forEach(function(e) {
+				const show = (zoom > threshold && e.dataset.on == "1");
+				e.style.display = (show ? "block" : "none");
+			});
+		}
+	};
+
+	// ----------
+	$.Viewer.prototype.showMarkers = function(type, show) {
+		const self = this;
+
+		self.marker_elems.forEach(function(e) {
+			if (!type || e.dataset.type == type) {
+				e.dataset.on = (show ? "1" : "0");
+			}
+		});
+
+		self.updateMarkers();
 	};
 
 })();

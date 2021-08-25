@@ -14,17 +14,24 @@
 	$.Viewer.prototype.nav = function() {
 		const self = this;
 
+		addCrosshair(self);
+		addCoordNav(self);
+	};
+
+	function addCrosshair(self) {
 		const n = document.createElement('nav');
 		n.innerHTML += '<img src="images/center.gif">';
 		self.addControl(n, { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
+	}
 
+	function addCoordNav(self) {
 		const p = document.createElement('div');
 		const p2 = document.createElement('div');
-		p2.setAttribute('id', 'position');
+		p2.id = 'position';
 		p.appendChild(p2);
 		self.addControl(p, { anchor: OpenSeadragon.ControlAnchor.BOTTOM_RIGHT });
 
-		var tracker = new OpenSeadragon.MouseTracker({
+		const tracker = new OpenSeadragon.MouseTracker({
 			element: self.container, 
 			moveHandler: function(event) {
 				if (self.world.getItemCount() <= 1) return;
@@ -42,7 +49,6 @@
 		});
 
 		tracker.setTracking(true);
-
-	};
+	}
 
 })();
