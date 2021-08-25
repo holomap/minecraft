@@ -104,10 +104,16 @@
 			visible: false,
 		});
 
+		viewer.addSingleMap("tenkuu-aqua-line", mapinfo_1, {
+			url: "map/tenkuu_aqua_line.png",
+			visible: false,
+		});
+
 		viewer.addMapSwitcher([
 			//["original", "生地図", true],
 			["rails", "鉄道", false],
 			["haachama-coaster", "はあちゃまコースター", false],
+			["tenkuu-aqua-line", "天空あくあライン", false],
 		], function(name, show) {
 			if (name == "original") {
 				viewer.showLayer("original", show);
