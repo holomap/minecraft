@@ -94,6 +94,12 @@
 			index: 1, // under original
 		});
 
+		viewer.addSingleMap("aqua-line", mapinfo_1, {
+			url: "map/aqua_line.png",
+			visible: false,
+			opacity: 0.75,
+		});
+
 		viewer.addSingleMap("rails", mapinfo_1, {
 			url: "map/rails.png",
 			visible: false,
@@ -111,6 +117,7 @@
 
 		viewer.addMapSwitcher([
 			//["original", "生地図", true],
+			["aqua-line", "あくあライン", false],
 			["rails", "鉄道", false],
 			["haachama-coaster", "はあちゃまコースター", false],
 			["tenkuu-aqua-line", "天空あくあライン", false],
@@ -121,7 +128,10 @@
 			} else {
 				viewer.showLayer(name, show);
 			}
-			if (name == "rails" || name == "haachama-coaster" || name == "tenkuu-aqua-line") {
+			if (name == "rails" ||
+				name == "haachama-coaster" ||
+				name == "tenkuu-aqua-line" ||
+				name == "aqua-line") {
 				viewer.showMarkers(name, show);
 			}
 		});
@@ -156,6 +166,28 @@
 			[544, -151, "落下ドッキリトロッコ終着点（下車）", null, "tenkuu-aqua-line"],
 			[536, -147, "落下ドッキリトロッコ終着点（下車）", null, "tenkuu-aqua-line"],
 		], "station", false);
+
+		/*
+		viewer.addMarkers([
+			[224, -329, "ホロライブレジスタンスマンション", null, "tenkuu-aqua-line"],
+		], "fall", false);
+		*/
+		
+		viewer.addMarkers([
+			//[308, -269, "ガンダム", null, "aqua-line"],
+			[285, -258, "正面玄関跡", null, "aqua-line"],
+			[347, -322, "しけ村", null, "aqua-line"],
+			[328, -295, "蜂養成所『あくプロ』", null, "aqua-line"],
+			[290, -346, "ネザーゲート（閉鎖）", null, "aqua-line"],
+			[251, -345, "ゾンビトラップ前", null, "aqua-line"],
+			//[200, -296, "軌道エレベーター（資源サーバーポータル）", null, "aqua-line"],
+			[232, -123, "ジンジャーエール（さくら神社前）", null, "aqua-line"],
+		], "ladder", false);
+		
+		viewer.addMarkers([
+			[319, -258, "骨粉工場（閉鎖）", null, "aqua-line"],
+		], "barrier", false);
+		
 	}
 
 	function loadMarkers(viewer) {

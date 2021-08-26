@@ -33,8 +33,10 @@
 			
 			self.layers.set(id, layer);
 			
-			layer.on = data.item.source.visible;
+			layer.on = layer.source.visible;
 			if (layer.on === undefined) layer.on = true;
+
+			layer.default_opacity = layer.source.opacity || 1;
 
 			self.showLayer(id, layer.on)
 		};
@@ -52,6 +54,7 @@
 				id: id,
 				info: info,
 				visible: src.visible,
+				opacity: src.opacity,
 				minLevel: src.minLevel,
 				maxLevel: src.maxLevel,
 				Image: {
@@ -86,6 +89,7 @@
 				url: src.url,
 				info: info,
 				visible: src.visible,
+				opacity: src.opacity,
 			}),
 			width: (info.vw / info.scale) / (base.vw / base.scale),
 			x: ((base.zx / base.scale) - (info.zx / info.scale)) / (base.vw / base.scale),
@@ -157,7 +161,7 @@
 		const self = this;
 		const layer = self.layers.get(id)
 		layer.on = !!show;
-		layer.setOpacity((layer.on ? 1 : 0));
+		layer.setOpacity((layer.on ? layer.default_opacity : 0));
 	};
 
 })();
