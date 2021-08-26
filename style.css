@@ -101,9 +101,6 @@ nav>img {
 	background-image: url("images/mcicon/elytra32.png");
 	width: 32px;
 	height: 32px;
-	border-radius: 50%;
-	background-color: rgba(255,255,255,0.5);
-	box-shadow: 0 0 10px 0px #fff;
 }
 .marker.ladder {
 	background-image: url("images/mcicon/ladder32.png");
@@ -115,11 +112,13 @@ nav>img {
 }
 .marker.barrier {
 	background-image: url("images/mcicon/barrier32.png");
+	width: 24px;
+	height: 24px;
+}
+.marker.bubble {
+	background-image: url("images/mcicon/bubble32.png");
 	width: 32px;
 	height: 32px;
-	border-radius: 50%;
-	background-color: rgba(255,255,255,0.5);
-	box-shadow: 0 0 10px 0px #fff;
 }
 
 #print {

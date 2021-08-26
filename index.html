@@ -60,7 +60,7 @@
 
 	loadMapLayers(viewer);
 
-	loadMarkers(viewer);
+	loadMarkers(viewer); // マーカー情報
 
 	function loadMapLayers(viewer) {
 		// 詳細地図（レベル1）
@@ -135,70 +135,18 @@
 				viewer.showMarkers(name, show);
 			}
 		});
-
-		viewer.addMarkers([
-			//[290, -195, "ホロハウス前", null, "rails"],
-			//[293, -194, "ホロハウス前", null, "rails"],
-			[291.5, -194.5, "ホロハウス前", null, "rails"],
-			[424, -91, "高性能ハウス山麓", null, "rails"],
-			[387, -333, "ちくわぶタワー前", null, "rails"],
-			[463, -511, "運動会会場（乗り場）", null, "rails"],
-			[461, -520, "運動会会場（下車）", null, "rails"],
-			//[232, -344, "AKUKINステーション", null, "rails"],
-			//[234, -344, "AKUKINステーション", null, "rails"],
-			[233, -344, "AKUKINステーション", null, "rails"],
-			[245, -360, "AKUKINステーション前", null, "rails"],
-			[198, -470, "ねぽらぼビル前", null, "rails"],
-			[-238, -517, "AKUKIN建設本社前", null, "rails"],
-			[69, -427, "旧AKUKIN建設本社前", null, "rails"],
-			[296, -358, "はあちゃまデスコースター乗り場", null, "haachama-coaster"],
-			[466, -143, "はあちゃまデスコースター第1部終着点（下車）", null, "haachama-coaster"],
-			[462, -136, "はあちゃまデスコースター第2部乗り場", null, "haachama-coaster"],
-			[255, -372, "はあちゃまデスコースター第2部終着点（下車）", null, "haachama-coaster"],
-			[299, -367, "バベちゃまの塔・あくあ地下帝国行き乗り場", null, "haachama-coaster"],
-			//[299, -435, "分岐点", null],
-			[420, -719, "バベちゃまの塔", null, "haachama-coaster"],
-			[324, -259, "爆破ドッキリトロッコ乗り場", null, "tenkuu-aqua-line"],
-			[511, -259, "爆破ドッキリトロッコ終着点", null, "tenkuu-aqua-line"],
-			//[324, -249, "落下ドッキリトロッコ乗り場", null, "tenkuu-aqua-line"],
-			//[324, -247, "落下ドッキリトロッコ乗り場", null, "tenkuu-aqua-line"],
-			[324, -248, "落下ドッキリトロッコ乗り場", null, "tenkuu-aqua-line"],
-			[544, -151, "落下ドッキリトロッコ終着点（下車）", null, "tenkuu-aqua-line"],
-			[536, -147, "落下ドッキリトロッコ終着点（下車）", null, "tenkuu-aqua-line"],
-		], "station", false);
-
-		/*
-		viewer.addMarkers([
-			[224, -329, "ホロライブレジスタンスマンション", null, "tenkuu-aqua-line"],
-		], "fall", false);
-		*/
-		
-		viewer.addMarkers([
-			//[308, -269, "ガンダム", null, "aqua-line"],
-			[285, -258, "正面玄関跡", null, "aqua-line"],
-			[347, -322, "しけ村", null, "aqua-line"],
-			[328, -295, "蜂養成所『あくプロ』", null, "aqua-line"],
-			[290, -346, "ネザーゲート（閉鎖）", null, "aqua-line"],
-			[251, -345, "ゾンビトラップ前", null, "aqua-line"],
-			//[200, -296, "軌道エレベーター（資源サーバーポータル）", null, "aqua-line"],
-			[232, -123, "ジンジャーエール（さくら神社前）", null, "aqua-line"],
-		], "ladder", false);
-		
-		viewer.addMarkers([
-			[319, -258, "骨粉工場（閉鎖）", null, "aqua-line"],
-		], "barrier", false);
-		
 	}
 
 	function loadMarkers(viewer) {
-		$.get("marker.csv", readMarkerCsv, 'text'); // マーカー情報
+		$.get("marker.csv", readMarkerCsv, 'text');
 	
 		function readMarkerCsv(data) {
 			let markers = $.csv.toArrays(data);
 			markers.shift(); // strip header
 			// ignore commented-out rows
 			markers = markers.filter(function(r){return !r[0].match(/^\/\//)});
-			viewer.addMarkers(markers, "normal", true);
+			viewer.addMarkers(markers);
+			viewer.showMarkers("normal", true);
 		}
 	}
 
