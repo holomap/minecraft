@@ -111,6 +111,11 @@
 			visible: false,
 		});
 
+		viewer.addSingleMap("nene-waterway", mapinfo_1, {
+			url: "map/nene_waterway.png",
+			visible: false,
+		});
+
 		viewer.addSingleMap("haachama-coaster", mapinfo_1, {
 			url: "map/haachama_coaster.png",
 			visible: false,
@@ -127,6 +132,7 @@
 			//["nene-metro", "ねねの地下通路", false],
 			["metro", "地下通路（あくあライン、ねね）", false],
 			["rails", "鉄道", false],
+			["nene-waterway", "ねねの空中水路", false],
 			["haachama-coaster", "はあちゃまコースター", false],
 			["tenkuu-aqua-line", "天空あくあライン", false],
 		], function(name, show) {
@@ -136,18 +142,12 @@
 			} else if (name == "metro") {
 				viewer.showLayer("aqua-line", show);
 				viewer.showLayer("nene-metro", show);
-			} else {
-				viewer.showLayer(name, show);
-			}
-			if (name == "rails" ||
-				name == "haachama-coaster" ||
-				name == "tenkuu-aqua-line" ||
-				name == "aqua-line") {
-				viewer.showMarkers(name, show);
-			} else if (name == "metro") {
 				viewer.showMarkers("aqua-line", show);
 				viewer.showMarkers("nene-metro", show);
-			} 
+			} else {
+				viewer.showLayer(name, show);
+				viewer.showMarkers(name, show);
+			}
 		});
 	}
 
