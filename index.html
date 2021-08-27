@@ -100,6 +100,12 @@
 			opacity: 0.75,
 		});
 
+		viewer.addSingleMap("nene-metro", mapinfo_1, {
+			url: "map/nene_metro.png",
+			visible: false,
+			opacity: 0.75,
+		});
+
 		viewer.addSingleMap("rails", mapinfo_1, {
 			url: "map/rails.png",
 			visible: false,
@@ -117,7 +123,9 @@
 
 		viewer.addMapSwitcher([
 			//["original", "生地図", true],
-			["aqua-line", "あくあライン（地下）", false],
+			//["aqua-line", "あくあライン（地下）", false],
+			//["nene-metro", "ねねの地下通路", false],
+			["metro", "地下通路（あくあライン、ねね）", false],
 			["rails", "鉄道", false],
 			["haachama-coaster", "はあちゃまコースター", false],
 			["tenkuu-aqua-line", "天空あくあライン", false],
@@ -125,6 +133,9 @@
 			if (name == "original") {
 				viewer.showLayer("original", show);
 				viewer.showLayer("3rd-scale", show);
+			} else if (name == "metro") {
+				viewer.showLayer("aqua-line", show);
+				viewer.showLayer("nene-metro", show);
 			} else {
 				viewer.showLayer(name, show);
 			}
@@ -133,7 +144,10 @@
 				name == "tenkuu-aqua-line" ||
 				name == "aqua-line") {
 				viewer.showMarkers(name, show);
-			}
+			} else if (name == "metro") {
+				viewer.showMarkers("aqua-line", show);
+				viewer.showMarkers("nene-metro", show);
+			} 
 		});
 	}
 
