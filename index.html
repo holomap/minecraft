@@ -60,7 +60,7 @@
 
 	loadMapLayers(viewer);
 
-	loadMarkers(viewer);
+	loadMarkers(viewer); // マーカー情報
 
 	function loadMapLayers(viewer) {
 		// 詳細地図（レベル1）
@@ -94,6 +94,18 @@
 			index: 1, // under original
 		});
 
+		viewer.addSingleMap("aqua-line", mapinfo_1, {
+			url: "map/aqua_line.png",
+			visible: false,
+			opacity: 0.75,
+		});
+
+		viewer.addSingleMap("nene-metro", mapinfo_1, {
+			url: "map/nene_metro.png",
+			visible: false,
+			opacity: 0.75,
+		});
+
 		viewer.addSingleMap("rails", mapinfo_1, {
 			url: "map/rails.png",
 			visible: false,
@@ -104,56 +116,51 @@
 			visible: false,
 		});
 
+		viewer.addSingleMap("tenkuu-aqua-line", mapinfo_1, {
+			url: "map/tenkuu_aqua_line.png",
+			visible: false,
+		});
+
 		viewer.addMapSwitcher([
 			//["original", "生地図", true],
+			//["aqua-line", "あくあライン（地下）", false],
+			//["nene-metro", "ねねの地下通路", false],
+			["metro", "地下通路（あくあライン、ねね）", false],
 			["rails", "鉄道", false],
 			["haachama-coaster", "はあちゃまコースター", false],
+			["tenkuu-aqua-line", "天空あくあライン", false],
 		], function(name, show) {
 			if (name == "original") {
 				viewer.showLayer("original", show);
 				viewer.showLayer("3rd-scale", show);
+			} else if (name == "metro") {
+				viewer.showLayer("aqua-line", show);
+				viewer.showLayer("nene-metro", show);
 			} else {
 				viewer.showLayer(name, show);
 			}
-			if (name == "rails" || name == "haachama-coaster") {
+			if (name == "rails" ||
+				name == "haachama-coaster" ||
+				name == "tenkuu-aqua-line" ||
+				name == "aqua-line") {
 				viewer.showMarkers(name, show);
-			}
+			} else if (name == "metro") {
+				viewer.showMarkers("aqua-line", show);
+				viewer.showMarkers("nene-metro", show);
+			} 
 		});
-
-		viewer.addMarkers([
-			//[290, -195, "ホロハウス前", null, "rails"],
-			//[293, -194, "ホロハウス前", null, "rails"],
-			[291.5, -194.5, "ホロハウス前", null, "rails"],
-			[424, -91, "高性能ハウス山麓", null, "rails"],
-			[387, -333, "ちくわぶタワー前", null, "rails"],
-			[463, -511, "運動会会場（乗り場）", null, "rails"],
-			[461, -520, "運動会会場（下車）", null, "rails"],
-			//[232, -344, "AKUKINステーション", null, "rails"],
-			//[234, -344, "AKUKINステーション", null, "rails"],
-			[233, -344, "AKUKINステーション", null, "rails"],
-			[245, -360, "AKUKINステーション前", null, "rails"],
-			[198, -470, "ねぽらぼビル前", null, "rails"],
-			[-238, -517, "AKUKIN建設本社前", null, "rails"],
-			[69, -427, "旧AKUKIN建設本社前", null, "rails"],
-			[296, -358, "はあちゃまデスコースター乗り場", null, "haachama-coaster"],
-			[466, -143, "はあちゃまデスコースター第1部終着点（下車）", null, "haachama-coaster"],
-			[462, -136, "はあちゃまデスコースター第2部乗り場", null, "haachama-coaster"],
-			[255, -372, "はあちゃまデスコースター第2部終着点（下車）", null, "haachama-coaster"],
-			[299, -367, "バベちゃまの塔・あくあ地下帝国行き乗り場", null, "haachama-coaster"],
-			//[299, -435, "分岐点", null],
-			[420, -719, "バベちゃまの塔", null, "haachama-coaster"],
-		], "station", false);
 	}
 
 	function loadMarkers(viewer) {
-		$.get("marker.csv", readMarkerCsv, 'text'); // マーカー情報
+		$.get("marker.csv", readMarkerCsv, 'text');
 	
 		function readMarkerCsv(data) {
 			let markers = $.csv.toArrays(data);
 			markers.shift(); // strip header
 			// ignore commented-out rows
 			markers = markers.filter(function(r){return !r[0].match(/^\/\//)});
-			viewer.addMarkers(markers, "normal", true);
+			viewer.addMarkers(markers);
+			viewer.showMarkers("normal", true);
 		}
 	}
 

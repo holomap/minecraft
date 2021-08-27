@@ -67,7 +67,7 @@
 	}
 
 	// ----------
-	$.Viewer.prototype.addMarkers = function(marker, type, show) {
+	$.Viewer.prototype.addMarkers = function(marker) {
 		const self = this;
 		const info = self.mapinfo;
 
@@ -77,15 +77,14 @@
 			
 			icon.id = id;
 			icon.className = "marker";
-			icon.classList.add(type);
+			icon.classList.add(row[3]);
 			icon.setAttribute("title", row[2]);
-			if (row[3]) {
-				icon.href = row[3];
+			if (row[5]) {
+				icon.href = row[5];
 				icon.target = "_blank";
 			}
-			//icon.dataset.type = type;
-			icon.dataset.type = row[4] || type;
-			icon.dataset.on = (show ? "1" : "0");
+			icon.dataset.group = row[4];
+			icon.dataset.on = "0";
 
 			self.marker_elems.push(icon);
 
@@ -120,11 +119,11 @@
 	};
 
 	// ----------
-	$.Viewer.prototype.showMarkers = function(type, show) {
+	$.Viewer.prototype.showMarkers = function(group, show) {
 		const self = this;
 
 		self.marker_elems.forEach(function(e) {
-			if (!type || e.dataset.type == type) {
+			if (!group || e.dataset.group == group) {
 				e.dataset.on = (show ? "1" : "0");
 			}
 		});
