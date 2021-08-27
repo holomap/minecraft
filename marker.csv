@@ -397,6 +397,9 @@ X,Z,NAME,ICON,GROUP,URL
 298,-273,シオンの地下室,normal,aqua-line,https://seesaawiki.jp/hololivetv/d/%BB%E7%BA%E9%A5%B7%A5%AA%A5%F3%A1%DAMinecraft%A1%DB#shionbase
 310,-269,あくあの地下倉庫,normal,aqua-line,
 321,-263,小麦栽培装置（調整中）,normal,aqua-line,
+301,-273,あくあのエンチャント部屋,normal,aqua-line,
+274,-281,シオンの宇宙部屋（未完成）,normal,aqua-line,
+636,-119,地下騒音部屋,normal,aqua-line,
 //285,-258,あくあライン,ladder,aqua-line,https://seesaawiki.jp/hololivetv/d/%CC%AB%A4%A2%A4%AF%A4%A2%A1%DAMinecraft%A1%DB#aqualine
 285,-258,あくあライン 正面玄関跡（シオン宅）,ladder,aqua-line,https://seesaawiki.jp/hololivetv/d/%CC%AB%A4%A2%A4%AF%A4%A2%A1%DAMinecraft%A1%DB#aqualine
 //308,-269,ガンダム（あくあの拠点入口）,ladder,aqua-line,
@@ -406,5 +409,6 @@ X,Z,NAME,ICON,GROUP,URL
 251,-345,ゾンビトラップ前,ladder,aqua-line,
 //200,-296,軌道エレベーター（資源サーバーポータル）,ladder,aqua-line,
 232,-123,ジンジャーエール（さくら神社前）,ladder,aqua-line,
-319,-258,骨粉工場（閉鎖）,barrier,aqua-line,
+319,-258,骨粉工場,ladder,aqua-line,
 298,-249,落下トラップ出口,bubble,aqua-line,
+635,-123,シオンの新居,ladder,aqua-line,
