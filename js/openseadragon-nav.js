@@ -40,10 +40,10 @@
 				const viewportPoint = self.viewport.pointFromPixel(webPoint);
 				const layer = self.world.getItemAt(1);
 				const imagePoint = layer.viewportToImageCoordinates(viewportPoint);
-				const info = layer.source.info;
+				const rect = layer.source.rect;
 
-				const x = Math.floor((imagePoint.x - info.zx) / info.scale);
-				const z = Math.floor((imagePoint.y - info.zy) / info.scale);
+				const x = Math.floor(imagePoint.x / rect.scale + rect.x);
+				const z = Math.floor(imagePoint.y / rect.scale + rect.z);
 				p2.innerText = 'X:' + x + ' Z:' + z;
 			}
 		});

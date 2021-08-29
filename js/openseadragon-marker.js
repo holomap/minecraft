@@ -14,7 +14,6 @@
 	$.Viewer.prototype.markerLink = function(threshold) {
 		const self = this;
 		const exp = 180;
-		const scale = self.mapinfo.scale;
 
 		self.marker_elems = [];
 		self.marker_enabled = true;
@@ -69,7 +68,7 @@
 	// ----------
 	$.Viewer.prototype.addMarkers = function(marker) {
 		const self = this;
-		const info = self.mapinfo;
+		const rect = self.maprect;
 
 		marker.forEach(function(row) {
 			const icon = document.createElement("a");
@@ -91,8 +90,8 @@
 			self.addOverlay({
 				id: id,
 				element: icon,
-				x: (info.zx + ((row[0]-0) + 0.5) * info.scale) / info.vw,
-				y: (info.zy + ((row[1]-0) + 0.5) * info.scale) / info.vw, // not vh
+				x: (((row[0]-0) + 0.5) - rect.x) / rect.w,
+				y: (((row[1]-0) + 0.5) - rect.z) / rect.w, // not rect.h
 				placement: $.Placement.CENTER,
 				checkResize: false,
 			});
