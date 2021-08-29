@@ -17,7 +17,7 @@
     // ----------
     $.Viewer.prototype.bookmarkUrl = function(conv_old) {
         const self = this;
-        const info = self.mapinfo;
+        const rect = self.maprect;
 
         let updateTimeout;
 
@@ -74,8 +74,8 @@
             updateTimeout = setTimeout(function() {
                 const zoom = self.getZoomFactor().toPrecision(2);
                 const pan = self.viewport.getCenter();
-                const x = Math.round((pan.x * info.vw - info.zx) / info.scale);
-                const y = Math.round((pan.y * info.vw - info.zy) / info.scale); // not vh
+                const x = Math.round(pan.x * rect.w + rect.x);
+                const y = Math.round(pan.y * rect.w + rect.z); // not rect.h
                 const url = location.pathname + '#v=' + VERSION + '&zoom=' + zoom + '&x=' + x + '&y=' + y;
                 history.replaceState({}, '', url);
             }, 100);
@@ -87,8 +87,8 @@
             }
 
             if (params.x !== undefined && params.y !== undefined) {
-                const x = (params.x * info.scale + info.zx) / info.vw;
-                const y = (params.y * info.scale + info.zy) / info.vw; // not vh
+                const x = (params.x - rect.x) / rect.w;
+                const y = (params.y - rect.z) / rect.w; // not rect.h
                 self.viewport.panTo(new $.Point(x, y), true);
             }
         };

@@ -10,17 +10,30 @@
 		}
 	}
 
+	$.MapRect = function(width, height, x, z, scale) {
+		// the size of rect in blocks
+		this.w = width;
+		this.h = height;
+		// the coordinates of north-east corner
+		this.x = x;
+		this.z = z;
+		// the number of pixels for 1 block in the image
+		this.scale = scale;
+		this.iw = this.w * this.scale;
+		this.ih = this.h * this.scale;
+	};
+
 	// ----------
-	$.Viewer.prototype.setupMapInfo = function(mapinfo) {
+	$.Viewer.prototype.setupMapInfo = function(maprect) {
 		const self = this;
 
-		self.mapinfo = mapinfo;
+		self.maprect = maprect;
 		self.layers = new Map();
 
 		const initBaseImage = function (data) {
 			const layer = data.item;
 			if (layer.source.id == "base") {
-				layer.source.info = mapinfo,
+				layer.source.rect = maprect,
 				self.world.removeHandler("add-item", initBaseImage);
 			}
 		};
@@ -44,15 +57,16 @@
 	};
 
 	// ----------
-	$.Viewer.prototype.addTiledMap = function(id, info, src) {
+	$.Viewer.prototype.addTiledMap = function(src) {
 		const self = this;
-		const base = self.mapinfo;
+		const base = self.maprect;
+		const rect = src.rect;
 
 		self.addTiledImage({
 			index: src.index,
 			tileSource: {
-				id: id,
-				info: info,
+				id: src.id,
+				rect: src.rect,
 				visible: src.visible,
 				opacity: src.opacity,
 				minLevel: src.minLevel,
@@ -66,34 +80,35 @@
 					minLevel: src.minLevel,
 					maxLevel: src.maxLevel,
 					Size: {
-						Width: info.vw,
-						Height: info.vh,
+						Width: rect.iw,
+						Height: rect.ih,
 					},
 				},
 			},
-			width: (info.vw / info.scale) / (base.vw / base.scale),
-			x: ((base.zx / base.scale) - (info.zx / info.scale)) / (base.vw / base.scale),
-			y: ((base.zy / base.scale) - (info.zy / info.scale)) / (base.vw / base.scale), // not base.vh
+			width: (rect.w / base.w),
+			x: ((rect.x - base.x) / base.w),
+			y: ((rect.z - base.z) / base.w), // not base.h
 		});
 	};
 
 	// ----------
-	$.Viewer.prototype.addSingleMap = function(id, info, src) {
+	$.Viewer.prototype.addSingleMap = function(src) {
 		const self = this;
-		const base = self.mapinfo;
+		const base = self.maprect;
+		const rect = src.rect;
 		
 		self.addTiledImage({
 			index: src.index,
 			tileSource: new OpenSeadragon.ImageTileSource({
-				id: id,
+				id: src.id,
 				url: src.url,
-				info: info,
+				rect: src.rect,
 				visible: src.visible,
 				opacity: src.opacity,
 			}),
-			width: (info.vw / info.scale) / (base.vw / base.scale),
-			x: ((base.zx / base.scale) - (info.zx / info.scale)) / (base.vw / base.scale),
-			y: ((base.zy / base.scale) - (info.zy / info.scale)) / (base.vw / base.scale), // not base.vh
+			width: (rect.w / base.w),
+			x: ((rect.x - base.x) / base.w),
+			y: ((rect.z - base.z) / base.w), // not base.h
 		});
 	};
 
@@ -102,7 +117,7 @@
 		const self = this;
 		const csize = self.viewport.getContainerSize();
 		const zoom = self.viewport.getZoom();
-		const factor = zoom * csize.x / self.mapinfo.vw;
+		const factor = zoom * csize.x / self.maprect.w;
 		return factor;
 	};
 
@@ -110,7 +125,7 @@
 	$.Viewer.prototype.setZoomFactor = function(factor, immediately) {
 		const self = this;
 		const csize = self.viewport.getContainerSize();
-		const zoom = factor * self.mapinfo.vw / csize.x;
+		const zoom = factor * self.maprect.w / csize.x;
 		self.viewport.zoomTo(zoom, null, immediately);
 	};
 
@@ -160,6 +175,7 @@
 	$.Viewer.prototype.showLayer = function(id, show) {
 		const self = this;
 		const layer = self.layers.get(id)
+		if (!layer) return;
 		layer.on = !!show;
 		layer.setOpacity((layer.on ? layer.default_opacity : 0));
 	};

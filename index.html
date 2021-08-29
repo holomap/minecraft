@@ -20,21 +20,9 @@
 (function(){
 
 	// 最大範囲
-	const mapinfo_base = {
-		scale: 1,
-		vw: 128*12 * 1,
-		vh: 128*12 * 1,
-		zx: 128*4.5 * 1,
-		zy: 128*8.5 * 1,
-	};
+	const maprect_base = new OpenSeadragon.MapRect(128*12, 128*12, -128*4.5, -128*8.5, 1);
 	// 以前の地図
-	const mapinfo_old = {
-		scale: 8,
-		vw: 9216, // (128*8 + 64*2) * scale
-		vh: 8192, // (128*7 + 64*2) * scale
-		zx: 3072, // (64 + 128*2.5) * scale
-		zy: 7168, // (64 + 128*6.5) * scale
-	};
+	const maprect_old = new OpenSeadragon.MapRect(128*8+64*2, 128*7+64*2, -(64+128*2.5), -(64+128*6.5), 8);
 
 	const viewer = OpenSeadragon({
 		id: "main",
@@ -49,7 +37,7 @@
 		},
 	});
 
-	viewer.setupMapInfo(mapinfo_base);
+	viewer.setupMapInfo(maprect_base);
 
 	viewer.nav(); // ナビボタン
 	viewer.bookmarkUrl(convertOldParams); // 座標URL
@@ -63,24 +51,9 @@
 	loadMarkers(viewer); // マーカー情報
 
 	function loadMapLayers(viewer) {
-		// 詳細地図（レベル1）
-		const mapinfo_1 = {
-			scale: 1,
-			vw: 128*8 * 1,
-			vh: 128*8 * 1,
-			zx: 128*2.5 * 1,
-			zy: 128*6.5 * 1,
-		};
-		// 広範囲地図（レベル3）
-		const mapinfo_3 = {
-			scale: 1/4,
-			vw: 128*12 * (1/4),
-			vh: 128*12 * (1/4),
-			zx: 128*4.5 * (1/4),
-			zy: 128*8.5 * (1/4),
-		};
-
-		viewer.addTiledMap("original", mapinfo_1, {
+		viewer.addTiledMap({
+			id: "original",
+			rect: new OpenSeadragon.MapRect(128*8, 128*8, -128*2.5, -128*6.5, 1),
 			url: "tiles-original/",
 			format: "png",
 			tileSize: 256,
@@ -89,34 +62,60 @@
 			maxLevel: 10,
 		});
 
-		viewer.addSingleMap("3rd-scale", mapinfo_3, {
+		viewer.addSingleMap({
+			id: "3rd-scale",
+			rect: new OpenSeadragon.MapRect(128*12, 128*12, -128*4.5, -128*8.5, 1/4),
 			url: "map/3rd_scale.png",
 			index: 1, // under original
 		});
 
-		viewer.addSingleMap("aqua-line", mapinfo_1, {
+		viewer.addSingleMap({
+			id: "aqua-line",
+			rect: new OpenSeadragon.MapRect(443, 244, 519-128*2.5, 475-128*6.5, 1),
 			url: "map/aqua_line.png",
 			visible: false,
 			opacity: 0.75,
 		});
 
-		viewer.addSingleMap("nene-metro", mapinfo_1, {
+		viewer.addSingleMap({
+			id: "nene-metro",
+			rect: new OpenSeadragon.MapRect(95, 307, 416-128*2.5, 291-128*6.5, 1),
 			url: "map/nene_metro.png",
 			visible: false,
 			opacity: 0.75,
 		});
 
-		viewer.addSingleMap("rails", mapinfo_1, {
+		viewer.addSingleMap({
+			id: "rails",
+			rect: new OpenSeadragon.MapRect(704, 465, 81-128*2.5, 311-128*6.5, 1),
 			url: "map/rails.png",
 			visible: false,
 		});
 
-		viewer.addSingleMap("haachama-coaster", mapinfo_1, {
+		viewer.addSingleMap({
+			id: "haachama-glass-way",
+			rect: new OpenSeadragon.MapRect(283, 79, 479-128*2.5, 652-128*6.5, 1),
+			url: "map/haachama_glass_way.png",
+			visible: false,
+		});
+
+		viewer.addSingleMap({
+			id: "nene-waterway",
+			rect: new OpenSeadragon.MapRect(84, 267, 519-128*2.5, 548-128*6.5, 1),
+			url: "map/nene_waterway.png",
+			visible: false,
+		});
+
+		viewer.addSingleMap({
+			id: "haachama-coaster",
+			rect: new OpenSeadragon.MapRect(851, 600, 0-128*2.5, 112-128*6.5, 1),
 			url: "map/haachama_coaster.png",
 			visible: false,
 		});
 
-		viewer.addSingleMap("tenkuu-aqua-line", mapinfo_1, {
+		viewer.addSingleMap({
+			id: "tenkuu-aqua-line",
+			rect: new OpenSeadragon.MapRect(496, 311, 370-128*2.5, 500-128*6.5, 1),
 			url: "map/tenkuu_aqua_line.png",
 			visible: false,
 		});
@@ -127,6 +126,8 @@
 			//["nene-metro", "ねねの地下通路", false],
 			["metro", "地下通路（あくあライン、ねね）", false],
 			["rails", "鉄道", false],
+			["haachama-glass-way", "はあちゃまの監視ロード（廃線）", false],
+			["nene-waterway", "ねねの空中水路", false],
 			["haachama-coaster", "はあちゃまコースター", false],
 			["tenkuu-aqua-line", "天空あくあライン", false],
 		], function(name, show) {
@@ -136,18 +137,12 @@
 			} else if (name == "metro") {
 				viewer.showLayer("aqua-line", show);
 				viewer.showLayer("nene-metro", show);
-			} else {
-				viewer.showLayer(name, show);
-			}
-			if (name == "rails" ||
-				name == "haachama-coaster" ||
-				name == "tenkuu-aqua-line" ||
-				name == "aqua-line") {
-				viewer.showMarkers(name, show);
-			} else if (name == "metro") {
 				viewer.showMarkers("aqua-line", show);
 				viewer.showMarkers("nene-metro", show);
-			} 
+			} else {
+				viewer.showLayer(name, show);
+				viewer.showMarkers(name, show);
+			}
 		});
 	}
 
@@ -165,7 +160,7 @@
 	}
 
 	function convertOldParams(params) {
-		const v1 = mapinfo_old;
+		const v1 = maprect_old;
 		params.x = (params.x * v1.vw - v1.zx) / v1.scale;
 		params.y = (params.y * v1.vw - v1.zy) / v1.scale; // not vh
 	}
