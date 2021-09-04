@@ -34,30 +34,41 @@
                 });
 
                 const ver = parseInt(params.v);
-                const zoom = parseFloat(params.zoom);
-                const x = parseFloat(params.x);
-                const y = parseFloat(params.y);
 
                 if (isNaN(ver)) {
                     params.v = 1;
                 } else {
                     params.v = ver;
                 }
+
+                // up to v2
+                if (params.v <= 2) {
+                    const y = parseFloat(params.y);
+                    if (params.z === undefined) {
+                        params.z = params.y;
+                    }
+                }
+
+                const zoom = parseFloat(params.zoom);
+                const x = parseFloat(params.x);
+                const z = parseFloat(params.z);
+
                 if (isNaN(zoom)) {
                     delete params.zoom;
                 } else {
                     params.zoom = zoom;
                 }
-                if (isNaN(x) || isNaN(y)) {
+                if (isNaN(x) || isNaN(z)) {
                     console.error('bad hash param', part);
                     delete params.x;
-                    delete params.y;
+                    delete params.z;
                     delete params.zoom;
                 } else {
                     params.x = x;
-                    params.y = y;
+                    params.z = z;
                 }
 
+                // v1 to v2
                 if (params.v < 2) {
                     if (conv_old) {
                         conv_old(params);
@@ -75,8 +86,8 @@
                 const zoom = self.getZoomFactor().toPrecision(2);
                 const pan = self.viewport.getCenter();
                 const x = Math.round(pan.x * rect.w + rect.x);
-                const y = Math.round(pan.y * rect.w + rect.z); // not rect.h
-                const url = location.pathname + '#v=' + VERSION + '&zoom=' + zoom + '&x=' + x + '&y=' + y;
+                const z = Math.round(pan.y * rect.w + rect.z); // not rect.h
+                const url = location.pathname + '#v=' + VERSION + '&zoom=' + zoom + '&x=' + x + '&z=' + z;
                 history.replaceState({}, '', url);
             }, 100);
         };
@@ -86,9 +97,9 @@
                 self.setZoomFactor(params.zoom, true);
             }
 
-            if (params.x !== undefined && params.y !== undefined) {
+            if (params.x !== undefined && params.z !== undefined) {
                 const x = (params.x - rect.x) / rect.w;
-                const y = (params.y - rect.z) / rect.w; // not rect.h
+                const y = (params.z - rect.z) / rect.w; // not rect.h
                 self.viewport.panTo(new $.Point(x, y), true);
             }
         };
