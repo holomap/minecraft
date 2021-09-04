@@ -494,3 +494,6 @@ X,Z,NAME,ICON,GROUP,URL
 //99,-237,オリーの家,ladder,nene-metro,
 //160,-103,かたた（かなた）氏の監視部屋,normal,haachama-glass-way,
 //440,-179,羊監視塔,normal,haachama-glass-way,
+-28,-523,マグマコースター乗り場,station,pekoland-coasters,
+//-28,-529,マグマコースター終着点（下車）,station,pekoland-coasters,
+-49,-567,ペコースター乗り場,station,pekoland-coasters,

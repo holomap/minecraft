@@ -86,9 +86,9 @@
 		});
 
 		viewer.addSingleMap({
-			id: "rails",
+			id: "railways",
 			rect: new OpenSeadragon.MapRect(709, 582, 81-128*2.5, 194-128*6.5, 1),
-			url: "map/rails.png",
+			url: "map/railways.png",
 			visible: false,
 		});
 
@@ -107,6 +107,13 @@
 		});
 
 		viewer.addSingleMap({
+			id: "pekoland-coasters",
+			rect: new OpenSeadragon.MapRect(164, 187, 174-128*2.5, 149-128*6.5, 1),
+			url: "map/pekoland_coasters.png",
+			visible: false,
+		});
+		
+		viewer.addSingleMap({
 			id: "haachama-coaster",
 			rect: new OpenSeadragon.MapRect(851, 600, 0-128*2.5, 112-128*6.5, 1),
 			url: "map/haachama_coaster.png",
@@ -124,10 +131,12 @@
 			//["original", "生地図", true],
 			//["aqua-line", "あくあライン（地下）", false],
 			//["nene-metro", "ねねの地下通路", false],
-			["metro", "地下通路（あくあライン、ねね）", false],
-			["rails", "鉄道", false],
-			["haachama-glass-way", "はあちゃまの監視ロード（廃線）", false],
-			["nene-waterway", "ねねの空中水路", false],
+			["metro", "地下通路", false],
+			["railways", "鉄道", false],
+			//["haachama-glass-way", "はあちゃまの監視ロード（廃線）", false],
+			//["nene-waterway", "ねねの空中水路", false],
+			["airways", "空中連絡線", false],
+			["pekoland-coasters", "ぺこらんどコースター", false],
 			["haachama-coaster", "はあちゃまコースター", false],
 			["tenkuu-aqua-line", "天空あくあライン", false],
 		], function(name, show) {
@@ -136,9 +145,14 @@
 				viewer.showLayer("3rd-scale", show);
 			} else if (name == "metro") {
 				viewer.showLayer("aqua-line", show);
-				viewer.showLayer("nene-metro", show);
 				viewer.showMarkers("aqua-line", show);
+				viewer.showLayer("nene-metro", show);
 				viewer.showMarkers("nene-metro", show);
+			} else if (name == "airways") {
+				viewer.showLayer("haachama-glass-way", show);
+				viewer.showMarkers("haachama-glass-way", show);
+				viewer.showLayer("nene-waterway", show);
+				viewer.showMarkers("nene-waterway", show);
 			} else {
 				viewer.showLayer(name, show);
 				viewer.showMarkers(name, show);
