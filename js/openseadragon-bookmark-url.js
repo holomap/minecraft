@@ -66,6 +66,9 @@
                 } else {
                     params.x = x;
                     params.z = z;
+                    if (!params.zoom) {
+                        params.zoom = 4;
+                    }
                 }
 
                 // v1 to v2
