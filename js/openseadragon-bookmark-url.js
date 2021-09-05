@@ -43,9 +43,9 @@
 
                 // up to v2
                 if (params.v <= 2) {
-                    const y = parseFloat(params.y);
                     if (params.z === undefined) {
                         params.z = params.y;
+                        delete params.y;
                     }
                 }
 

@@ -227,8 +227,8 @@
 
 	function convertOldParams(params) {
 		const v1 = maprect_old;
-		params.x = (params.x * v1.vw - v1.zx) / v1.scale;
-		params.y = (params.y * v1.vw - v1.zy) / v1.scale; // not vh
+		params.x = params.x * v1.w + v1.x;
+		params.z = params.z * v1.w + v1.z; // not vh
 	}
 
 })();
