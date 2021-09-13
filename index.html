@@ -66,6 +66,7 @@
 	loadMapLayers(viewer);
 
 	loadMarkers(viewer); // マーカー情報
+	loadLivers(viewer); // マーカー情報
 
 	function loadMapLayers(viewer) {
 		viewer.addTiledMap({
@@ -187,6 +188,30 @@
 			markers = markers.filter(function(r){return !r[0].match(/^\/\//)});
 			viewer.addMarkers(markers);
 			viewer.showMarkers("normal", true);
+		}
+	}
+
+	function loadLivers(viewer) {
+		$.get("liver.csv", readLiversCsv, 'text');
+	
+		function readLiversCsv(data) {
+			let livers = $.csv.toArrays(data);
+			livers.shift(); // strip header
+			// ignore commented-out rows
+			livers = livers.filter(function(r){return !r[0].match(/^\/\//)});
+
+			let ul = document.createElement("ul");
+			livers.forEach(function(row) {
+				let li = '<li>';
+				li += '<input type="checkbox" class="Twitterto" id="'+row[0]+'" value="'+row[3]+'">';
+				li += '<label for="'+row[0]+'">';
+				li += '<img src="'+row[4]+'">';
+				li += row[1];
+				li += '</label>';
+				li += '</li>';
+				$(ul).append(li);
+			});
+			$("#Twitterlist").append(ul);
 		}
 	}
 

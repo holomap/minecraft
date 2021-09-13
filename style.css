@@ -164,10 +164,11 @@ a#run:before {
 div#position {
 	padding: 0.5em 1em;
 	min-width: 6em;
-	text-align: right;
+	text-align: left;
 	font-size: 10px; font-size: 1.0rem;
 	color: #FFF;
-	background-color: rgba(0,0,0,0.5);
+	/*background-color: rgba(0,0,0,0.5);*/
+	float: left;
 }
 
 div#layerlist > div {
@@ -182,3 +183,69 @@ div#layerlist > div {
 div#layerlist ul {
 	list-style: none;
 }
+/*-- [ フォーム ] ------------------------------------------------------------*/
+
+select, input, textarea, button {
+	vertical-align:2px; vertical-align:0.2rem;
+	margin-right:5px;
+}
+
+/* チェックボックスリスト */
+#Twitterlist {
+	border: 1px solid #ddd;
+	display: block;
+	width: 100%;
+	height: 200px;
+	overflow-y:scroll;
+	font-size: 10px; font-size: 1.0rem;
+	background-color: rgba(255,255,255,0.5);
+}
+
+#Twitterlist>ul>li {
+	display: block;
+	width: calc(100% - 1em);
+	border-top : 1px dotted #909090;
+}
+#Twitterlist>ul>li:first-of-type {border-top : none;}
+
+#Twitterlist>ul>li>label>img {
+	display: block;
+	float: left;
+	margin-right:10px;
+}
+
+#Twitterlist>ul>li>input[type=checkbox] {
+	display: none;
+}
+#Twitterlist>ul>li>input[type="checkbox"]:checked + label{
+	background-color: #3A519D;
+	color: #fff;
+}
+#Twitterlist>ul>li>label {
+	display: block;
+	width: 100%;
+	padding:0.4em 0.5em;
+	line-height: 1em;
+}
+
+
+#Twitterbtn {
+	width:calc(100% - 0.6em);
+	height:calc(45px - 0.6em);
+	background-color: rgba(0,0,0,0.5);
+	padding: 0.3em;
+	/*overflow:auto;*/
+}
+#Twitterbtn>a {
+	/*width:calc(100% - 20px);*/
+	padding: 5px 10px;
+	color: white;
+	display: inline-block;
+	opacity: 0.8;
+	border-radius: 10px;
+	background-color: #55acee;
+	text-decoration: none;
+	float   : left;
+}
+#Twitterbtn>a:hover {opacity: 1;}
+#Twitterbtn>a>i {margin-right:0.2em;}
