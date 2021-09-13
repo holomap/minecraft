@@ -53,7 +53,7 @@
 				if(!urlhash[i].indexOf("z=")){urlz=urlhash[i].substr(2);}
 			}
 			let twtext = twto+"〇〇〇のホロ鯖座標は、X:"+urlx+" Z:"+urlz+" です。";
-			let winurl = "https://twitter.com/intent/tweet?text="+encodeURI(twtext)+"%0D%0A&url="+encodeURI(location.href);
+			let winurl = "https://twitter.com/intent/tweet?text="+encodeURIComponent(twtext)+"%0D%0A&url="+encodeURIComponent(location.href);
 			window.open(winurl, '_blank');
 			return false;
 		});
