@@ -91,6 +91,12 @@
 		});
 
 		viewer.addSingleMap({
+			id: "newly-built",
+			rect: new OpenSeadragon.MapRect(128*10, 128*10, -128*3.5, -128*7.5, 1),
+			url: "map/newly_built.png",
+		});
+
+		viewer.addSingleMap({
 			id: "aqua-line",
 			rect: new OpenSeadragon.MapRect(443, 244, 519-128*2.5, 475-128*6.5, 1),
 			url: "map/aqua_line.png",
@@ -164,6 +170,7 @@
 			if (name == "original") {
 				viewer.showLayer("original", show);
 				viewer.showLayer("3rd-scale", show);
+				viewer.showLayer("newly-built", show);
 			} else if (name == "metro") {
 				viewer.showLayer("aqua-line", show);
 				viewer.showMarkers("aqua-line", show);
