@@ -84,10 +84,19 @@ nav>img {
 .marker-disabled .marker {
 	display: none !important;
 }
+@keyframes blinkAnime {
+	  0% { opacity: 1; }
+	 70% { opacity: 1; }
+	100% { opacity: 0.0; }
+}
+.marker.blink {
+	animation: blinkAnime 2s infinite alternate;
+}
 .marker.normal {
 	background-image: url("images/marker.png");
 	width: 24px;
 	height: 24px;
+	animation: blinkAnime 2s infinite alternate;
 }
 .marker.station {
 	background-image: url("images/mcicon/minecart32.png");
